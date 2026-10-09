@@ -1,0 +1,73 @@
+@startuml
+title Plataforma Municipal de Preservação Ambiental — Componentes
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+actor "Cidadão / Empresa" as participante
+actor "Técnico / Engenharia" as tecnico
+actor "Gestor / Administrador" as gestor
+actor "Comunidade" as comunidade
+rectangle "Plataforma municipal" {
+  component "Portal de participação" as portal <<frontend>>
+  component "Portal de gestão" as gestao <<frontend>>
+  component "Área pública" as publico <<frontend>>
+  interface "API de participação" as ip
+  interface "API de gestão" as ig
+  interface "API pública agregada" as ia
+  package "Aplicação em camadas (monólito modular)" {
+    component "Identidade e autorização\nRF01, RF02" as auth
+    component "Consumo e cálculo de emissões\nRF03, RF04" as carbono
+    component "Compensações e documentos\nRF05, RF07, RF10" as compensacao
+    component "Pagamentos PIX\nRF06" as pagamentos
+    component "Projetos e destinação de recursos\nRF08 + escopo inicial" as projetos
+    component "Indicadores e transparência\nRF09, RF11" as indicadores
+    component "Conteúdo educativo\nRF12 — opcional" as educacao
+    component "Persistência e auditoria\nRNF01, RNF02" as persistencia
+  }
+  database "Banco de dados" as db
+}
+cloud "Provedor de pagamentos PIX" as pix <<externo>>
+participante --> portal
+tecnico --> gestao
+gestor --> gestao
+comunidade --> publico
+portal ..> ip : HTTPS
+gestao ..> ig : HTTPS
+publico ..> ia : HTTPS
+ip -- carbono
+ip -- compensacao
+ip -- auth
+ig -- auth
+ig -- carbono
+ig -- projetos
+ig -- indicadores
+ia -- indicadores
+ia -- educacao
+carbono ..> auth : verifica acesso
+compensacao ..> auth : verifica acesso
+projetos ..> auth : verifica acesso
+indicadores ..> auth : acesso gerencial
+compensacao ..> pagamentos : solicita cobrança / recebe status
+pagamentos ..> pix : criar / consultar cobrança HTTPS
+pix ..> pagamentos : confirmação autenticada (webhook)
+carbono ..> persistencia
+compensacao ..> persistencia
+pagamentos ..> persistencia
+projetos ..> persistencia
+auth ..> persistencia
+indicadores ..> persistencia : consulta dados consolidados
+educacao ..> persistencia
+persistencia --> db
+note bottom of carbono
+Engenharia mantém os parâmetros validados.
+Cálculo gera estimativa de CO2e e valor sugerido.
+end note
+note bottom of projetos
+Gestão de áreas, responsáveis, visitas, fotos e evolução.
+Destinação de recursos confirmados a projetos ou fundo.
+end note
+note bottom of indicadores
+Transparência expõe apenas dados agregados.
+Dashboard gerencial exige perfil autorizado.
+end note
+@enduml

@@ -1,0 +1,51 @@
+@startuml
+title Plataforma Municipal de Preservação Ambiental — Pacotes e dependências
+top to bottom direction
+skinparam shadowing false
+package "apresentacao" as apresentacao {
+  package "participacao" as participacao
+  package "gestao" as gestao
+  package "transparencia" as transparencia
+}
+package "aplicacao" as aplicacao {
+  package "casos_de_uso" as casos
+  package "contratos (DTOs / API)" as contratos
+}
+package "dominio" as dominio {
+  package "identidade" as identidade
+  package "carbono" as carbono
+  package "compensacoes" as compensacoes
+  package "pagamentos" as pagamentos
+  package "projetos" as projetos
+  package "indicadores" as indicadores
+  package "educacao (opcional)" as educacao
+  package "portas (repositórios / gateway PIX / auditoria)" as portas
+}
+package "infraestrutura" as infraestrutura {
+  package "persistencia" as persistencia
+  package "integracao_pix" as pix
+  package "arquivos" as arquivos
+  package "seguranca_e_auditoria" as seguranca
+}
+package "composicao (inicialização / injeção de dependências)" as composicao
+apresentacao ..> aplicacao
+casos ..> contratos
+aplicacao ..> dominio
+compensacoes ..> carbono : referência à estimativa
+compensacoes ..> pagamentos : status da compensação
+indicadores ..> projetos : dados de acompanhamento
+indicadores ..> compensacoes : dados de arrecadação
+dominio ..> portas
+persistencia ..> portas : implementa
+pix ..> portas : implementa
+arquivos ..> portas : implementa
+seguranca ..> portas : implementa
+composicao ..> apresentacao
+composicao ..> aplicacao
+composicao ..> infraestrutura
+note bottom of dominio
+Regras de negócio independem de banco e provedor PIX.
+Aplicação coordena autorização, pagamentos e destinações.
+Setas tracejadas indicam dependência de código.
+end note
+@enduml

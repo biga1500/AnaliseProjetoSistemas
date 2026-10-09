@@ -1,0 +1,48 @@
+@startuml
+title Plataforma Municipal de Preservação Ambiental — Implantação proposta
+skinparam shadowing false
+node "Dispositivo do usuário" <<device>> as dispositivo {
+  node "Navegador" <<executionEnvironment>> {
+    artifact "Portal web\nParticipação / Gestão / Transparência" as portal
+  }
+}
+node "Servidor web" <<node>> as web {
+  node "Proxy reverso / HTTPS" <<executionEnvironment>> as proxy {
+    artifact "Arquivos estáticos do portal" as arquivos
+  }
+}
+node "Servidor de aplicação" <<node>> as app {
+  node "Runtime da aplicação" <<executionEnvironment>> {
+    artifact "API — monólito modular\nIdentidade, Carbono, Compensações, PIX,\nProjetos, Indicadores e Educação" as api
+  }
+}
+node "Servidor de dados (rede privada)" <<node>> as dados {
+  node "SGBD relacional" <<executionEnvironment>> {
+    database "Usuários / Consumos / Parâmetros\nCompensações / Pagamentos / Destinações\nProjetos / Visitas / Auditoria" as db
+  }
+}
+node "Armazenamento privado de arquivos" <<node>> as storage {
+  artifact "Fotos e evidências\nComprovantes e declarações" as docs
+}
+cloud "Instituição / Provedor PIX" <<externo>> as pix
+portal --> proxy : HTTPS
+proxy --> api : encaminha /api\nrede privada
+api --> db : conexão autenticada\nrede privada / TLS
+api --> docs : leitura / gravação autorizada\nHTTPS
+api --> pix : HTTPS — criação / consulta de cobrança
+pix --> proxy : HTTPS — webhook de confirmação
+note right of api
+Autorização por perfil em cada operação.
+Validação de entradas e de confirmação PIX.
+Status e auditoria persistidos.
+end note
+note bottom of dados
+Proposta: acesso restrito, backups e controle de retenção.
+Dados públicos disponibilizados de forma agregada.
+end note
+note bottom of web
+Nós representam responsabilidades de implantação.
+Podem compartilhar infraestrutura no MVP.
+Hospedagem e tecnologias ainda não definidas.
+end note
+@enduml
