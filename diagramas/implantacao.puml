@@ -26,7 +26,7 @@ node "Armazenamento privado de arquivos" <<node>> as storage {
 }
 cloud "Instituição / Provedor PIX" <<externo>> as pix
 portal --> proxy : HTTPS
-proxy --> api : encaminha /api\nrede privada
+proxy --> api : API\nrede privada
 api --> db : conexão autenticada\nrede privada / TLS
 api --> docs : leitura / gravação autorizada\nHTTPS
 api --> pix : HTTPS — criação / consulta de cobrança

@@ -4,19 +4,25 @@ Documentação de arquitetura proposta a partir do **Main Project, versão 0.4, 
 
 ## Diagramas
 
-Os fontes editáveis são PlantUML. Para visualizar, cole o conteúdo do arquivo no editor PlantUML indicado ao final.
+Os fontes editáveis são PlantUML. As imagens abaixo foram geradas a partir desses fontes e estão disponíveis em SVG e PNG.
 
 ### Componentes
 
-[Fonte PlantUML](diagramas/componentes.puml)
+![Diagrama de componentes](diagramas/componentes.svg)
+
+[Fonte PlantUML](diagramas/componentes.puml) · [PNG](diagramas/componentes.png)
 
 ### Implantação
 
-[Fonte PlantUML](diagramas/implantacao.puml)
+![Diagrama de implantação](diagramas/implantacao.svg)
+
+[Fonte PlantUML](diagramas/implantacao.puml) · [PNG](diagramas/implantacao.png)
 
 ### Pacotes
 
-[Fonte PlantUML](diagramas/pacotes.puml)
+![Diagrama de pacotes](diagramas/pacotes.svg)
+
+[Fonte PlantUML](diagramas/pacotes.puml) · [PNG](diagramas/pacotes.png)
 
 ## Decisão arquitetural (ADR-001)
 
